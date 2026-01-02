@@ -1874,6 +1874,409 @@ export const GENETIC_DATA: GeneData[] = [
     },
     relatedMarkers: ['Oxidized LDL', 'LDL', 'HDL', 'ApoB'],
   },
+  {
+    symbol: 'ADRB3',
+    name: 'Beta-3 Adrenergic Receptor',
+    category: GENE_CATEGORIES.METABOLISM,
+    function: 'Supports lipolysis and thermogenesis, influencing fat loss response to diet and exercise.',
+    variants: {
+      optimal: {
+        alleles: 'CC',
+        description: 'Efficient fat mobilization and better response to lifestyle fat-loss strategies',
+      },
+      moderate: {
+        alleles: 'CT',
+        description: 'Moderate fat mobilization; benefits from consistent activity and higher protein intake',
+      },
+      highRisk: {
+        alleles: 'TT',
+        description: 'Reduced fat mobilization; higher tendency to store fat and struggle with weight loss',
+      },
+    },
+    recommendations: {
+      optimal: [
+        'Maintain regular resistance + cardio training',
+        'Keep protein adequate (1.6-2.2g/kg)',
+      ],
+      moderate: [
+        'Increase daily steps (8-12k/day)',
+        'Prioritize resistance training 3-4x/week',
+        'Use higher-fiber meals for satiety',
+      ],
+      highRisk: [
+        'Emphasize resistance training + Zone 2 (3-5x/week total)',
+        'Use structured meal timing and tracking',
+        'Prioritize sleep (7.5-9h) to support appetite control',
+        'Consider caffeine/green tea pre-training if tolerated',
+      ],
+    },
+    relatedMarkers: ['Triglycerides', 'Insulin', 'HbA1c'],
+  },
+  {
+    symbol: 'LEPR',
+    name: 'Leptin Receptor',
+    category: GENE_CATEGORIES.METABOLISM,
+    function: 'Modulates satiety signaling and appetite regulation through leptin sensitivity.',
+    variants: {
+      optimal: {
+        alleles: 'GG',
+        description: 'Good leptin signaling and satiety; easier appetite regulation',
+      },
+      moderate: {
+        alleles: 'GA',
+        description: 'Moderate leptin sensitivity; may feel hunger more often under stress/sleep debt',
+      },
+      highRisk: {
+        alleles: 'AA',
+        description: 'Lower leptin sensitivity; higher risk of overeating and weight regain',
+      },
+    },
+    recommendations: {
+      optimal: [
+        'Balanced meals with adequate protein and fiber',
+        'Maintain regular sleep schedule',
+      ],
+      moderate: [
+        'Protein-forward breakfast',
+        'Avoid ultra-processed snacking',
+        'Prioritize sleep (leptin/ghrelin regulation)',
+      ],
+      highRisk: [
+        'Structured meal plan with high protein + high fiber',
+        'Minimize liquid calories and refined carbs',
+        'Use time-restricted eating if it improves adherence',
+        'Manage stress (cortisol worsens satiety signaling)',
+      ],
+    },
+    relatedMarkers: ['Leptin', 'Insulin', 'Triglycerides'],
+  },
+  {
+    symbol: 'CLOCK',
+    name: 'Circadian Locomotor Output Cycles Kaput',
+    category: GENE_CATEGORIES.METABOLISM,
+    function: 'Influences circadian rhythm, sleep timing, appetite, and metabolic efficiency.',
+    variants: {
+      optimal: {
+        alleles: 'TT',
+        description: 'More stable circadian rhythm; better metabolic response with regular routines',
+      },
+      moderate: {
+        alleles: 'TC',
+        description: 'Moderate circadian sensitivity; sleep inconsistency can impair appetite control',
+      },
+      highRisk: {
+        alleles: 'CC',
+        description: 'Higher circadian disruption sensitivity; late eating/sleep impacts metabolism more strongly',
+      },
+    },
+    recommendations: {
+      optimal: [
+        'Maintain consistent sleep/wake schedule',
+        'Time carbs around training if desired',
+      ],
+      moderate: [
+        'Avoid late-night meals (2-3h before bed)',
+        'Morning light exposure daily',
+        'Limit caffeine after midday',
+      ],
+      highRisk: [
+        'Strict sleep consistency (same bed/wake time)',
+        'Front-load calories earlier in the day',
+        'Time-restricted eating aligned with daylight',
+        'Reduce evening blue light exposure',
+      ],
+    },
+    relatedMarkers: ['Glucose', 'HbA1c', 'Cortisol'],
+  },
+  {
+    symbol: 'SLC2A2',
+    name: 'Glucose Transporter 2 (GLUT2)',
+    category: GENE_CATEGORIES.INSULIN,
+    function: 'Glucose sensing and transport in liver/pancreas; influences post-meal glucose handling.',
+    variants: {
+      optimal: {
+        alleles: 'CC',
+        description: 'Efficient glucose transport and post-meal glucose regulation',
+      },
+      moderate: {
+        alleles: 'CT',
+        description: 'Moderate post-meal glucose response; benefits from fiber and activity',
+      },
+      highRisk: {
+        alleles: 'TT',
+        description: 'Higher post-meal glucose excursions; increased diabetes risk with high refined-carb intake',
+      },
+    },
+    recommendations: {
+      optimal: [
+        'Balanced carbohydrate intake',
+        'Regular exercise supports excellent glucose control',
+      ],
+      moderate: [
+        'Prefer low-GI carbs and higher fiber',
+        'Walk 10-15 minutes after meals',
+      ],
+      highRisk: [
+        'Reduce refined carbs; prioritize protein/fiber with carbs',
+        'Use meal timing and training to improve glucose disposal',
+        'Consider CGM for personalization if available',
+      ],
+    },
+    relatedMarkers: ['Glucose', 'HbA1c', 'Insulin'],
+  },
+  {
+    symbol: 'SLC30A8',
+    name: 'Zinc Transporter 8 (ZnT8)',
+    category: GENE_CATEGORIES.INSULIN,
+    function: 'Zinc transport in pancreatic beta cells; influences insulin storage and secretion.',
+    variants: {
+      optimal: {
+        alleles: 'CC',
+        description: 'Efficient insulin packaging/secretion; normal beta-cell function',
+      },
+      moderate: {
+        alleles: 'CT',
+        description: 'Moderate beta-cell efficiency; higher benefit from lifestyle glucose control',
+      },
+      highRisk: {
+        alleles: 'TT',
+        description: 'Reduced insulin secretion efficiency; higher diabetes susceptibility',
+      },
+    },
+    recommendations: {
+      optimal: [
+        'Maintain metabolic health habits',
+        'Adequate dietary zinc intake',
+      ],
+      moderate: [
+        'Strength training 3x/week improves insulin sensitivity',
+        'Ensure zinc adequacy (food-first, supplement if low)',
+      ],
+      highRisk: [
+        'Aggressive insulin-sensitivity strategy (strength + Zone 2)',
+        'Limit refined carbs; prioritize whole foods',
+        'Check zinc status if intake is low',
+      ],
+    },
+    relatedMarkers: ['Insulin', 'Glucose', 'HbA1c', 'Zinc'],
+  },
+  {
+    symbol: 'GSTP1',
+    name: 'Glutathione S-Transferase Pi 1',
+    category: GENE_CATEGORIES.INFLAMMATION,
+    function: 'Phase II detoxification enzyme; helps conjugate toxins and reduce oxidative stress.',
+    variants: {
+      optimal: {
+        alleles: 'AA',
+        description: 'Efficient detoxification capacity and oxidative stress buffering',
+      },
+      moderate: {
+        alleles: 'AG',
+        description: 'Moderate detox efficiency; may benefit from higher antioxidant intake',
+      },
+      highRisk: {
+        alleles: 'GG',
+        description: 'Lower detoxification efficiency; greater sensitivity to pollutants and smoke exposure',
+      },
+    },
+    recommendations: {
+      optimal: [
+        'Maintain cruciferous vegetables and adequate protein',
+        'Regular exercise supports detox pathways',
+      ],
+      moderate: [
+        'Increase cruciferous vegetables and alliums',
+        'NAC 600mg/day if tolerated',
+      ],
+      highRisk: [
+        'Prioritize glutathione support (NAC, glycine)',
+        'Minimize smoke/pollution exposure',
+        'Consider milk thistle for liver support',
+      ],
+    },
+    relatedMarkers: ['GGT', 'ALT', 'AST'],
+  },
+  {
+    symbol: 'NQO1',
+    name: 'NAD(P)H Quinone Dehydrogenase 1',
+    category: GENE_CATEGORIES.INFLAMMATION,
+    function: 'Antioxidant defense enzyme; supports cellular protection against oxidative stress.',
+    variants: {
+      optimal: {
+        alleles: 'CC',
+        description: 'Strong oxidative-stress defense and quinone detoxification',
+      },
+      moderate: {
+        alleles: 'CT',
+        description: 'Moderate antioxidant capacity',
+      },
+      highRisk: {
+        alleles: 'TT',
+        description: 'Lower enzyme activity; higher oxidative stress and toxin sensitivity',
+      },
+    },
+    recommendations: {
+      optimal: [
+        'Maintain antioxidant-rich diet (berries, greens)',
+        'Regular cardio supports mitochondrial resilience',
+      ],
+      moderate: [
+        'Increase antioxidants and polyphenols',
+        'Prioritize recovery to reduce oxidative load',
+      ],
+      highRisk: [
+        'High antioxidant/phytonutrient diet',
+        'Consider sulforaphane (broccoli sprouts)',
+        'Avoid smoking and excessive alcohol',
+      ],
+    },
+    relatedMarkers: ['hs-CRP', 'GGT'],
+  },
+  {
+    symbol: 'CYP1A2',
+    name: 'Cytochrome P450 1A2',
+    category: GENE_CATEGORIES.STRESS,
+    function: 'Metabolizes caffeine and certain xenobiotics; influences stimulant sensitivity and sleep impact.',
+    variants: {
+      optimal: {
+        alleles: 'AA',
+        description: 'Fast caffeine metabolism; lower sleep disruption from moderate caffeine intake',
+      },
+      moderate: {
+        alleles: 'AC',
+        description: 'Intermediate caffeine clearance; timing matters',
+      },
+      highRisk: {
+        alleles: 'CC',
+        description: 'Slow caffeine metabolism; higher anxiety/sleep disruption risk with caffeine',
+      },
+    },
+    recommendations: {
+      optimal: [
+        'Caffeine earlier in the day is generally tolerated',
+        'Avoid caffeine close to bedtime',
+      ],
+      moderate: [
+        'Keep caffeine before 2pm',
+        'Prefer lower doses and avoid “stacking” stimulants',
+      ],
+      highRisk: [
+        'Limit caffeine dose and stop by late morning',
+        'Use non-stimulant performance aids (electrolytes, creatine)',
+        'Prioritize sleep hygiene and stress management',
+      ],
+    },
+    relatedMarkers: ['Cortisol', 'Sleep (tracked)', 'Blood pressure'],
+  },
+  {
+    symbol: 'BHMT',
+    name: 'Betaine-Homocysteine Methyltransferase',
+    category: GENE_CATEGORIES.METHYLATION,
+    function: 'Alternative methylation pathway to recycle homocysteine using betaine (TMG/choline).',
+    variants: {
+      optimal: {
+        alleles: 'GG',
+        description: 'Efficient homocysteine recycling via betaine pathway',
+      },
+      moderate: {
+        alleles: 'GA',
+        description: 'Moderate BHMT activity; benefits from choline/betaine sufficiency',
+      },
+      highRisk: {
+        alleles: 'AA',
+        description: 'Reduced BHMT efficiency; higher homocysteine risk under low choline/betaine intake',
+      },
+    },
+    recommendations: {
+      optimal: [
+        'Maintain choline-rich foods (eggs, fish)',
+        'Balanced B-vitamin intake',
+      ],
+      moderate: [
+        'Increase choline/betaine foods (eggs, beets)',
+        'Monitor homocysteine if other methylation variants present',
+      ],
+      highRisk: [
+        'Consider TMG (betaine) 500-1000mg/day',
+        'Optimize folate/B12/B6 status',
+        'Retest homocysteine after 8-12 weeks if elevated',
+      ],
+    },
+    relatedMarkers: ['Homocysteine', 'Folate', 'B12'],
+  },
+  {
+    symbol: 'CBS',
+    name: 'Cystathionine Beta-Synthase',
+    category: GENE_CATEGORIES.METHYLATION,
+    function: 'Transsulfuration pathway enzyme; influences homocysteine balance and glutathione precursor flow.',
+    variants: {
+      optimal: {
+        alleles: 'CC',
+        description: 'Balanced homocysteine conversion and glutathione precursor flow',
+      },
+      moderate: {
+        alleles: 'CT',
+        description: 'Moderate pathway efficiency; may need stronger B6 support',
+      },
+      highRisk: {
+        alleles: 'TT',
+        description: 'Imbalanced transsulfuration; can contribute to methylation/glutathione issues',
+      },
+    },
+    recommendations: {
+      optimal: [
+        'Adequate protein intake',
+        'Balanced B-vitamin support',
+      ],
+      moderate: [
+        'Ensure B6 (P5P) adequacy',
+        'Prioritize sulfur-containing vegetables if tolerated',
+      ],
+      highRisk: [
+        'Support transsulfuration (P5P, glycine)',
+        'Consider NAC if oxidative stress is high',
+        'Monitor homocysteine and symptoms if supplementing methyl donors',
+      ],
+    },
+    relatedMarkers: ['Homocysteine', 'hs-CRP', 'GGT'],
+  },
+  {
+    symbol: 'COL5A1',
+    name: 'Collagen Type V Alpha 1 Chain',
+    category: GENE_CATEGORIES.MUSCLE,
+    function: 'Connective tissue integrity gene; associated with tendon/ligament injury risk and recovery needs.',
+    variants: {
+      optimal: {
+        alleles: 'CC',
+        description: 'Lower injury susceptibility and more resilient tendon response to training load',
+      },
+      moderate: {
+        alleles: 'CT',
+        description: 'Moderate connective tissue resilience; benefits from progressive loading',
+      },
+      highRisk: {
+        alleles: 'TT',
+        description: 'Higher risk of tendon/ligament overuse injuries; needs careful volume/impact management',
+      },
+    },
+    recommendations: {
+      optimal: [
+        'Standard progressive overload works well',
+        'Maintain mobility and warm-up routines',
+      ],
+      moderate: [
+        'Prioritize warm-ups and gradual load progression',
+        'Add tendon-focused work (slow eccentrics, isometrics)',
+      ],
+      highRisk: [
+        'Use conservative volume jumps (≤10%/week)',
+        'Emphasize eccentrics/isometrics and deloads',
+        'Collagen/gelatin + vitamin C 30-60 min pre-training',
+        'Manage impact exposure (running/plyos) progressively',
+      ],
+    },
+    relatedMarkers: ['hs-CRP', 'Vitamin C (diet)', 'Vitamin D'],
+  },
 ];
 
 export const getGeneBySymbol = (symbol: string): GeneData | undefined => {

@@ -5,19 +5,19 @@ const router = Router();
 
 router.use(protect);
 
-router.post('/conversations', (req, res) => {
+router.post('/conversations', (_req, res) => {
   res.json({ success: true, message: 'Create AI conversation' });
 });
 
-router.get('/conversations', (req, res) => {
+router.get('/conversations', (_req, res) => {
   res.json({ success: true, message: 'Get conversations' });
 });
 
-router.get('/conversations/:id', (req, res) => {
+router.get('/conversations/:id', (_req, res) => {
   res.json({ success: true, message: 'Get conversation details' });
 });
 
-router.post('/conversations/:id/messages', (req, res) => {
+router.post('/conversations/:id/messages', (_req, res) => {
   res.json({ success: true, message: 'Send message to AI coach' });
 });
 

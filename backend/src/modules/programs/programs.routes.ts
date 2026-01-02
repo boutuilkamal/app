@@ -5,23 +5,23 @@ const router = Router();
 
 router.use(protect);
 
-router.post('/fitness', (req, res) => {
+router.post('/fitness', (_req, res) => {
   res.json({ success: true, message: 'Create fitness program' });
 });
 
-router.get('/fitness', (req, res) => {
+router.get('/fitness', (_req, res) => {
   res.json({ success: true, message: 'Get fitness programs' });
 });
 
-router.get('/fitness/:id', (req, res) => {
+router.get('/fitness/:id', (_req, res) => {
   res.json({ success: true, message: 'Get fitness program details' });
 });
 
-router.put('/fitness/:id', (req, res) => {
+router.put('/fitness/:id', (_req, res) => {
   res.json({ success: true, message: 'Update fitness program' });
 });
 
-router.delete('/fitness/:id', (req, res) => {
+router.delete('/fitness/:id', (_req, res) => {
   res.json({ success: true, message: 'Delete fitness program' });
 });
 

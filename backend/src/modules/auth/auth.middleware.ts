@@ -16,7 +16,7 @@ export interface AuthRequest extends Request {
   };
 }
 
-export const protect = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const protect = async (req: AuthRequest, _res: Response, next: NextFunction) => {
   try {
     let token: string | undefined;
 
@@ -38,7 +38,7 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
 };
 
 export const authorize = (...roles: UserRole[]) => {
-  return (req: AuthRequest, res: Response, next: NextFunction) => {
+  return (req: AuthRequest, _res: Response, next: NextFunction) => {
     if (!req.user) {
       return next(new AppError('Not authorized', 401));
     }

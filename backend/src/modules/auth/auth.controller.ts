@@ -6,7 +6,7 @@ import { AuthRequest } from './auth.middleware';
 const authService = new AuthService();
 
 export class AuthController {
-  register = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  register = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const result = await authService.register(req.body);
     res.status(201).json({
       success: true,
@@ -14,7 +14,7 @@ export class AuthController {
     });
   });
 
-  login = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  login = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
     const result = await authService.login(req.body);
     res.status(200).json({
       success: true,
@@ -22,14 +22,14 @@ export class AuthController {
     });
   });
 
-  getMe = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+  getMe = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
     res.status(200).json({
       success: true,
       data: req.user,
     });
   });
 
-  changePassword = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+  changePassword = asyncHandler(async (req: AuthRequest, res: Response, _next: NextFunction) => {
     const { oldPassword, newPassword } = req.body;
     const result = await authService.changePassword(req.user!.id, oldPassword, newPassword);
     res.status(200).json({

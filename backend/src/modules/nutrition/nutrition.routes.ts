@@ -5,23 +5,23 @@ const router = Router();
 
 router.use(protect);
 
-router.post('/plans', (req, res) => {
+router.post('/plans', (_req, res) => {
   res.json({ success: true, message: 'Create nutrition plan' });
 });
 
-router.get('/plans', (req, res) => {
+router.get('/plans', (_req, res) => {
   res.json({ success: true, message: 'Get nutrition plans' });
 });
 
-router.get('/plans/:id', (req, res) => {
+router.get('/plans/:id', (_req, res) => {
   res.json({ success: true, message: 'Get nutrition plan details' });
 });
 
-router.put('/plans/:id', (req, res) => {
+router.put('/plans/:id', (_req, res) => {
   res.json({ success: true, message: 'Update nutrition plan' });
 });
 
-router.delete('/plans/:id', (req, res) => {
+router.delete('/plans/:id', (_req, res) => {
   res.json({ success: true, message: 'Delete nutrition plan' });
 });
 

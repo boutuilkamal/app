@@ -4,6 +4,13 @@ from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import os
 from dotenv import load_dotenv
+import io
+import re
+
+import pandas as pd
+from PIL import Image
+import pytesseract
+from PyPDF2 import PdfReader
 
 load_dotenv()
 
@@ -165,38 +172,134 @@ async def generate_personalized_program(request: ProgramGenerationRequest):
 
 async def extract_text_from_file(content: bytes, content_type: str) -> str:
     """Extract text from PDF, Image, or text file using OCR"""
-    # Implementation would use pytesseract for images, PyPDF2 for PDFs
-    # For now, returning placeholder
-    return "Extracted text from file"
+    ct = (content_type or "").lower()
+
+    # Text/CSV
+    if "text" in ct or "csv" in ct:
+        try:
+            return content.decode("utf-8", errors="ignore")
+        except Exception:
+            return content.decode(errors="ignore")
+
+    # PDF
+    if "pdf" in ct:
+        try:
+            reader = PdfReader(io.BytesIO(content))
+            parts: List[str] = []
+            for page in reader.pages:
+                parts.append(page.extract_text() or "")
+            return "\n".join(parts)
+        except Exception:
+            return ""
+
+    # Images (PNG/JPG/etc)
+    if "image" in ct or any(ext in ct for ext in ["png", "jpg", "jpeg", "webp"]):
+        try:
+            img = Image.open(io.BytesIO(content))
+            return pytesseract.image_to_string(img)
+        except Exception:
+            # OCR requires the system tesseract binary; return empty if unavailable.
+            return ""
+
+    # Fallback
+    try:
+        return content.decode("utf-8", errors="ignore")
+    except Exception:
+        return ""
 
 async def extract_gene_variants(text: str) -> List[GeneResult]:
     """Use AI to extract gene variants from text"""
-    # Implementation would use OpenAI API to parse genetic data
-    return []
+    # MVP deterministic extraction: SYMBOL + VARIANT (CSV-like or "SYMBOL: VAR")
+    by_symbol: Dict[str, str] = {}
+
+    # CSV-style lines
+    for line in text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        delim = "\t" if "\t" in line else (";" if ";" in line else ",")
+        parts = [p.strip() for p in line.split(delim) if p.strip()]
+        if len(parts) >= 2:
+            sym = parts[0].upper()
+            var = parts[1].upper()
+            if re.fullmatch(r"[A-Z0-9]{2,10}", sym) and len(var) >= 2:
+                by_symbol[sym] = var
+
+    # Regex fallback
+    for m in re.finditer(r"\b([A-Z0-9]{2,10})\b\s*[:\-]?\s*([A-Z0-9/]{2,12})\b", text):
+        sym = m.group(1).upper()
+        var = m.group(2).upper()
+        if sym not in by_symbol:
+            by_symbol[sym] = var
+
+    # We don't have the full 54-gene definition set in the AI service yet,
+    # so risk_level is left as "unknown" for now.
+    return [GeneResult(gene_symbol=sym, variant=var, risk_level="unknown") for sym, var in sorted(by_symbol.items())]
 
 async def generate_genetic_analysis(gene_results: List[GeneResult]) -> GeneticAnalysisResponse:
     """Generate comprehensive genetic analysis"""
+    # MVP scoring: unknown risk level, so score reflects extraction completeness only.
+    detected = len(gene_results)
+    overall_score = float(min(100.0, (detected / 54.0) * 100.0)) if detected > 0 else 0.0
     return GeneticAnalysisResponse(
-        overall_score=0.0,
+        overall_score=overall_score,
         strengths=[],
         risks=[],
         gene_results=gene_results,
-        summary="Analysis summary"
+        summary=f"Extracted {detected} gene variants. Connect gene definitions for full traffic-light scoring."
     )
 
 async def extract_biomarker_values(text: str) -> List[BiomarkerResult]:
     """Use AI to extract biomarker values from text"""
-    return []
+    out: Dict[str, BiomarkerResult] = {}
+
+    # CSV-style parse: NAME, VALUE, UNIT?
+    for line in text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        delim = "\t" if "\t" in line else (";" if ";" in line else ",")
+        parts = [p.strip() for p in line.split(delim) if p.strip()]
+        if len(parts) < 2:
+            continue
+        name = parts[0]
+        raw_value = parts[1].replace(",", ".")
+        try:
+            value = float(raw_value)
+        except Exception:
+            continue
+        unit = parts[2] if len(parts) >= 3 else ""
+        out[name.lower()] = BiomarkerResult(name=name, value=value, unit=unit, risk_level="unknown")
+
+    # Regex fallback: "Marker: 1.23 unit"
+    for m in re.finditer(
+        r"\b([A-Za-z][A-Za-z0-9\-\s()\/]+?)\b\s*[:\-]\s*([0-9]+(?:[.,][0-9]+)?)\s*([A-Za-z/%μ\^0-9.\-]+)?",
+        text,
+    ):
+        name = m.group(1).strip()
+        raw_value = (m.group(2) or "").replace(",", ".")
+        try:
+            value = float(raw_value)
+        except Exception:
+            continue
+        unit = (m.group(3) or "").strip()
+        key = name.lower()
+        if key not in out:
+            out[key] = BiomarkerResult(name=name, value=value, unit=unit, risk_level="unknown")
+
+    return list(out.values())
 
 async def generate_blood_analysis(biomarker_results: List[BiomarkerResult]) -> BloodAnalysisResponse:
     """Generate comprehensive blood analysis"""
+    detected = len(biomarker_results)
+    overall_score = float(min(100.0, (detected / 40.0) * 100.0)) if detected > 0 else 0.0
     return BloodAnalysisResponse(
-        overall_score=0.0,
+        overall_score=overall_score,
         optimal_count=0,
         borderline_count=0,
         critical_count=0,
         biomarker_results=biomarker_results,
-        summary="Analysis summary"
+        summary=f"Extracted {detected} biomarker values. Connect biomarker definitions for traffic-light scoring."
     )
 
 async def generate_ai_coach_response(

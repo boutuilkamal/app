@@ -5,27 +5,27 @@ const router = Router();
 
 router.use(protect);
 
-router.get('/exercises', (req, res) => {
+router.get('/exercises', (_req, res) => {
   res.json({ success: true, message: 'Get all exercises' });
 });
 
-router.get('/exercises/:id', (req, res) => {
+router.get('/exercises/:id', (_req, res) => {
   res.json({ success: true, message: 'Get exercise details' });
 });
 
-router.get('/recipes', (req, res) => {
+router.get('/recipes', (_req, res) => {
   res.json({ success: true, message: 'Get all recipes' });
 });
 
-router.get('/recipes/:id', (req, res) => {
+router.get('/recipes/:id', (_req, res) => {
   res.json({ success: true, message: 'Get recipe details' });
 });
 
-router.get('/supplements', (req, res) => {
+router.get('/supplements', (_req, res) => {
   res.json({ success: true, message: 'Get all supplements' });
 });
 
-router.get('/supplements/:id', (req, res) => {
+router.get('/supplements/:id', (_req, res) => {
   res.json({ success: true, message: 'Get supplement details' });
 });
 

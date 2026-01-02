@@ -138,8 +138,11 @@ export class AuthService {
   }
 
   private generateToken(userId: string, role: UserRole): string {
+    // jsonwebtoken v9 types restrict `expiresIn` to ms-style string literals.
+    // Our config is loaded from env, so we cast to the expected type.
+    const expiresIn = config.jwtExpiresIn as unknown as import('jsonwebtoken').SignOptions['expiresIn'];
     return jwt.sign({ userId, role }, config.jwtSecret, {
-      expiresIn: config.jwtExpiresIn,
+      expiresIn,
     });
   }
 

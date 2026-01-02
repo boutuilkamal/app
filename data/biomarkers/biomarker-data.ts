@@ -1113,6 +1113,172 @@ export const BIOMARKER_DATA: BiomarkerData[] = [
     },
     relatedGenes: [],
   },
+  {
+    name: 'Estimated Glomerular Filtration Rate',
+    shortName: 'eGFR',
+    category: BIOMARKER_CATEGORIES.KIDNEY,
+    unit: 'mL/min/1.73m²',
+    function: 'Estimate of kidney filtration capacity. Lower values indicate reduced kidney function.',
+    optimal: { min: 90, max: 130 },
+    moderate: { min: 60, max: 89 },
+    critical: { min: 15, max: 59 },
+    interventions: {
+      optimal: [
+        'Excellent filtration capacity',
+        'Maintain hydration and blood pressure control',
+      ],
+      moderate: [
+        'Monitor kidney function (repeat labs)',
+        'Optimize blood pressure and glucose control',
+        'Avoid NSAID overuse',
+        'Review high-protein intake if excessive',
+      ],
+      critical: [
+        'Medical evaluation recommended',
+        'Investigate chronic kidney disease causes',
+        'Strict blood pressure and glucose management',
+        'Avoid nephrotoxic substances',
+      ],
+    },
+    relatedGenes: [],
+  },
+  {
+    name: 'Uric Acid',
+    shortName: 'Uric Acid',
+    category: BIOMARKER_CATEGORIES.METABOLIC,
+    unit: 'mg/dL',
+    function: 'Purine metabolism marker. High levels correlate with gout risk, insulin resistance, and cardiometabolic risk.',
+    optimal: { min: 4.0, max: 6.0 },
+    moderate: { min: 6.1, max: 7.0 },
+    critical: { min: 7.1, max: 10.0 },
+    interventions: {
+      optimal: [
+        'Healthy purine metabolism',
+        'Maintain hydration and balanced diet',
+      ],
+      moderate: [
+        'Increase hydration',
+        'Reduce high-fructose intake and excess alcohol',
+        'Emphasize weight management and insulin sensitivity',
+        'Vitamin C intake may help',
+      ],
+      critical: [
+        'Medical evaluation (gout/metabolic risk)',
+        'Limit fructose, beer/spirits, and ultra-processed foods',
+        'Weight loss if overweight',
+        'Consider tart cherry (symptom support) and monitor trends',
+      ],
+    },
+    relatedGenes: ['SLC2A2', 'TCF7L2'],
+  },
+  {
+    name: 'Total Bilirubin',
+    shortName: 'Bilirubin',
+    category: BIOMARKER_CATEGORIES.LIVER,
+    unit: 'mg/dL',
+    function: 'Breakdown product of hemoglobin processed by liver. Elevated levels can indicate bile flow issues or hemolysis.',
+    optimal: { min: 0.4, max: 1.0 },
+    moderate: { min: 1.1, max: 1.5 },
+    critical: { min: 1.6, max: 5.0 },
+    interventions: {
+      optimal: [
+        'Normal bile processing and liver clearance',
+        'Maintain healthy lifestyle',
+      ],
+      moderate: [
+        'Recheck with full liver panel (ALT/AST/ALP/GGT)',
+        'Optimize hydration and reduce alcohol',
+        'Review medications/supplements',
+      ],
+      critical: [
+        'Medical evaluation recommended',
+        'Rule out bile duct obstruction, hepatitis, hemolysis',
+        'Avoid alcohol and hepatotoxic exposures',
+      ],
+    },
+    relatedGenes: ['GSTM1', 'GSTT1', 'GSTP1'],
+  },
+  {
+    name: 'Alkaline Phosphatase',
+    shortName: 'ALP',
+    category: BIOMARKER_CATEGORIES.LIVER,
+    unit: 'U/L',
+    function: 'Enzyme related to bile ducts and bone turnover. High levels may indicate cholestasis or bone remodeling.',
+    optimal: { min: 45, max: 90 },
+    moderate: { min: 91, max: 120 },
+    critical: { min: 121, max: 300 },
+    interventions: {
+      optimal: [
+        'Normal bile duct and bone-related enzyme activity',
+        'Maintain balanced nutrition',
+      ],
+      moderate: [
+        'Recheck with GGT and bilirubin to localize source',
+        'Review vitamin D status and bone health',
+        'Reduce alcohol and processed foods',
+      ],
+      critical: [
+        'Medical evaluation recommended',
+        'Rule out bile duct issues, gallbladder disease, or bone pathology',
+        'Full liver panel and imaging as indicated',
+      ],
+    },
+    relatedGenes: ['GSTM1', 'GSTT1'],
+  },
+  {
+    name: 'Hemoglobin',
+    shortName: 'Hgb',
+    category: BIOMARKER_CATEGORIES.BLOOD,
+    unit: 'g/dL',
+    function: 'Oxygen-carrying protein in red blood cells. Low levels suggest anemia and reduced performance capacity.',
+    optimal: { min: 13.5, max: 17.5 },
+    moderate: { min: 12.5, max: 13.4 },
+    critical: { min: 8.0, max: 12.4 },
+    interventions: {
+      optimal: [
+        'Healthy oxygen transport capacity',
+        'Support performance with balanced nutrition',
+      ],
+      moderate: [
+        'Assess iron status (ferritin, iron, transferrin)',
+        'Increase iron-rich foods + vitamin C',
+        'Review menstrual blood loss, GI symptoms, training load',
+      ],
+      critical: [
+        'Medical evaluation recommended',
+        'Rule out iron deficiency, B12/folate deficiency, bleeding',
+        'Targeted supplementation under supervision',
+      ],
+    },
+    relatedGenes: ['MTHFR', 'MTR', 'MTRR'],
+  },
+  {
+    name: 'White Blood Cell Count',
+    shortName: 'WBC',
+    category: BIOMARKER_CATEGORIES.BLOOD,
+    unit: '10^9/L',
+    function: 'Immune cell count. Elevated values can reflect infection, inflammation, or stress.',
+    optimal: { min: 4.0, max: 7.5 },
+    moderate: { min: 7.6, max: 10.0 },
+    critical: { min: 10.1, max: 20.0 },
+    interventions: {
+      optimal: [
+        'Normal immune cell range',
+        'Maintain recovery and sleep',
+      ],
+      moderate: [
+        'Assess recent infection, training stress, and sleep debt',
+        'Anti-inflammatory nutrition and hydration',
+        'Retest if symptomatic',
+      ],
+      critical: [
+        'Medical evaluation recommended (possible infection/inflammation)',
+        'Investigate symptoms and additional inflammatory markers',
+        'Do not ignore persistent elevation',
+      ],
+    },
+    relatedGenes: ['IL6', 'TNF', 'CRP'],
+  },
 ];
 
 export const getBiomarkerByName = (name: string): BiomarkerData | undefined => {
