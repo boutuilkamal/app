@@ -21,7 +21,7 @@ coverage/
 # Production
 /build
 /dist
-/.next
+.next/
 /out
 
 # Environment
