@@ -1,0 +1,669 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  COACH
+  CLIENT
+}
+
+enum RiskLevel {
+  OPTIMAL
+  MODERATE
+  HIGH
+}
+
+enum ProgramType {
+  STRENGTH
+  ZONE2_CARDIO
+  VO2_MAX
+  HYBRID
+}
+
+enum DietType {
+  STANDARD
+  KETO
+  VEGAN
+  VEGETARIAN
+  PALEO
+  MEDITERRANEAN
+  LOW_CARB
+  ANTI_INFLAMMATORY
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  TRIAL
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  firstName     String
+  lastName      String
+  role          UserRole @default(CLIENT)
+  avatar        String?
+  phone         String?
+  dateOfBirth   DateTime?
+  gender        Gender?
+  language      String   @default("en")
+  timezone      String   @default("UTC")
+  isActive      Boolean  @default(true)
+  emailVerified Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  coachProfile   CoachProfile?
+  clientProfile  ClientProfile?
+  notifications  Notification[]
+  activityLogs   ActivityLog[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model CoachProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bio             String?
+  specializations String[]
+  certifications  String[]
+  yearsExperience Int?
+  rating          Float    @default(0)
+  totalClients    Int      @default(0)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  clients         ClientProfile[]
+  appointments    Appointment[]
+}
+
+model ClientProfile {
+  id                    String   @id @default(uuid())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  coachId               String?
+  coach                 CoachProfile? @relation(fields: [coachId], references: [id])
+
+  height                Float?
+  weight                Float?
+  goals                 String[]
+  medicalConditions     String[]
+  allergies             String[]
+  currentMedications    String[]
+
+  subscriptionStatus    SubscriptionStatus @default(TRIAL)
+  subscriptionExpiresAt DateTime?
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  geneticReports        GeneticReport[]
+  bloodReports          BloodReport[]
+  fitnessPrograms       FitnessProgram[]
+  nutritionPlans        NutritionPlan[]
+  supplementProtocols   SupplementProtocol[]
+  appointments          Appointment[]
+  aiConversations       AIConversation[]
+  progressLogs          ProgressLog[]
+
+  @@index([coachId])
+}
+
+model GeneticReport {
+  id              String   @id @default(uuid())
+  clientId        String
+  client          ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  fileName        String
+  fileUrl         String
+  uploadedAt      DateTime @default(now())
+  processedAt     DateTime?
+  status          String   @default("pending")
+
+  overallScore    Float?
+  summary         String?
+  strengths       String[]
+  risks           String[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  geneResults     GeneResult[]
+
+  @@index([clientId])
+  @@index([status])
+}
+
+model GeneResult {
+  id              String   @id @default(uuid())
+  reportId        String
+  report          GeneticReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  geneId          String
+  geneDefinition  GeneDefinition @relation(fields: [geneId], references: [id])
+
+  variant         String
+  riskLevel       RiskLevel
+  notes           String?
+
+  createdAt       DateTime @default(now())
+
+  @@unique([reportId, geneId])
+  @@index([reportId])
+  @@index([geneId])
+}
+
+model GeneDefinition {
+  id              String   @id @default(uuid())
+  symbol          String   @unique
+  name            String
+  category        String
+  function        String
+
+  optimalVariant  String
+  moderateVariant String
+  highRiskVariant String
+
+  optimalDesc     String
+  moderateDesc    String
+  highRiskDesc    String
+
+  recommendations Json
+  relatedMarkers  String[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  geneResults     GeneResult[]
+
+  @@index([category])
+  @@index([symbol])
+}
+
+model BloodReport {
+  id              String   @id @default(uuid())
+  clientId        String
+  client          ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  fileName        String
+  fileUrl         String
+  testDate        DateTime
+  uploadedAt      DateTime @default(now())
+  processedAt     DateTime?
+  status          String   @default("pending")
+
+  overallScore    Float?
+  summary         String?
+  optimalCount    Int      @default(0)
+  borderlineCount Int      @default(0)
+  criticalCount   Int      @default(0)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  biomarkerResults BiomarkerResult[]
+
+  @@index([clientId])
+  @@index([status])
+}
+
+model BiomarkerResult {
+  id              String   @id @default(uuid())
+  reportId        String
+  report          BloodReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  biomarkerId     String
+  biomarkerDef    BiomarkerDefinition @relation(fields: [biomarkerId], references: [id])
+
+  value           Float
+  unit            String
+  riskLevel       RiskLevel
+  notes           String?
+
+  createdAt       DateTime @default(now())
+
+  @@unique([reportId, biomarkerId])
+  @@index([reportId])
+  @@index([biomarkerId])
+}
+
+model BiomarkerDefinition {
+  id              String   @id @default(uuid())
+  name            String   @unique
+  shortName       String
+  category        String
+  unit            String
+  function        String
+
+  optimalMin      Float
+  optimalMax      Float
+  moderateMin     Float?
+  moderateMax     Float?
+  criticalMin     Float?
+  criticalMax     Float?
+
+  interventions   Json
+  relatedGenes    String[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  biomarkerResults BiomarkerResult[]
+
+  @@index([category])
+  @@index([name])
+}
+
+model FitnessProgram {
+  id              String   @id @default(uuid())
+  clientId        String
+  client          ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  name            String
+  type            ProgramType
+  description     String?
+  durationWeeks   Int
+  sessionsPerWeek Int
+
+  isAiGenerated   Boolean  @default(false)
+  basedOnGenes    String[]
+  basedOnBiomarkers String[]
+
+  isActive        Boolean  @default(true)
+  startDate       DateTime?
+  endDate         DateTime?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  workouts        Workout[]
+
+  @@index([clientId])
+  @@index([isActive])
+}
+
+model Workout {
+  id              String   @id @default(uuid())
+  programId       String
+  program         FitnessProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  weekNumber      Int
+  dayNumber       Int
+  name            String
+  description     String?
+  estimatedMinutes Int
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  exercises       WorkoutExercise[]
+
+  @@index([programId])
+  @@index([weekNumber, dayNumber])
+}
+
+model WorkoutExercise {
+  id              String   @id @default(uuid())
+  workoutId       String
+  workout         Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+
+  exerciseId      String
+  exercise        Exercise @relation(fields: [exerciseId], references: [id])
+
+  orderIndex      Int
+  sets            Int
+  reps            String
+  tempo           String?
+  restSeconds     Int
+  notes           String?
+
+  createdAt       DateTime @default(now())
+
+  @@index([workoutId])
+  @@index([exerciseId])
+}
+
+model Exercise {
+  id              String   @id @default(uuid())
+  name            String   @unique
+  description     String
+  category        String
+  muscleGroup     String[]
+  equipment       String[]
+  difficulty      String
+
+  videoUrl        String?
+  imageUrl        String?
+  instructions    String[]
+
+  tags            String[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  workoutExercises WorkoutExercise[]
+
+  @@index([category])
+  @@index([difficulty])
+}
+
+model NutritionPlan {
+  id              String   @id @default(uuid())
+  clientId        String
+  client          ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  name            String
+  dietType        DietType
+  description     String?
+  durationWeeks   Int
+
+  dailyCalories   Int
+  proteinGrams    Int
+  carbsGrams      Int
+  fatGrams        Int
+
+  isAiGenerated   Boolean  @default(false)
+  basedOnGenes    String[]
+  basedOnBiomarkers String[]
+
+  excludedFoods   String[]
+  preferences     String[]
+
+  isActive        Boolean  @default(true)
+  startDate       DateTime?
+  endDate         DateTime?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  mealPlans       MealPlan[]
+
+  @@index([clientId])
+  @@index([isActive])
+}
+
+model MealPlan {
+  id              String   @id @default(uuid())
+  nutritionPlanId String
+  nutritionPlan   NutritionPlan @relation(fields: [nutritionPlanId], references: [id], onDelete: Cascade)
+
+  dayNumber       Int
+  name            String
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  meals           Meal[]
+
+  @@index([nutritionPlanId])
+}
+
+model Meal {
+  id              String   @id @default(uuid())
+  mealPlanId      String
+  mealPlan        MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+
+  mealType        String
+  timeOfDay       String?
+  orderIndex      Int
+
+  createdAt       DateTime @default(now())
+
+  recipes         MealRecipe[]
+
+  @@index([mealPlanId])
+}
+
+model MealRecipe {
+  id              String   @id @default(uuid())
+  mealId          String
+  meal            Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
+
+  recipeId        String
+  recipe          Recipe   @relation(fields: [recipeId], references: [id])
+
+  servings        Float    @default(1)
+
+  @@index([mealId])
+  @@index([recipeId])
+}
+
+model Recipe {
+  id              String   @id @default(uuid())
+  name            String   @unique
+  description     String
+  category        String
+  dietTags        String[]
+  functionTags    String[]
+
+  prepTimeMinutes Int
+  cookTimeMinutes Int
+  servings        Int
+
+  calories        Int
+  proteinGrams    Float
+  carbsGrams      Float
+  fatGrams        Float
+  fiberGrams      Float?
+
+  ingredients     Json
+  instructions    String[]
+
+  imageUrl        String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  mealRecipes     MealRecipe[]
+
+  @@index([category])
+}
+
+model SupplementProtocol {
+  id              String   @id @default(uuid())
+  clientId        String
+  client          ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  name            String
+  description     String?
+  durationWeeks   Int
+
+  isAiGenerated   Boolean  @default(false)
+  basedOnGenes    String[]
+  basedOnBiomarkers String[]
+
+  isActive        Boolean  @default(true)
+  startDate       DateTime?
+  endDate         DateTime?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  recommendations SupplementRecommendation[]
+
+  @@index([clientId])
+  @@index([isActive])
+}
+
+model SupplementRecommendation {
+  id              String   @id @default(uuid())
+  protocolId      String
+  protocol        SupplementProtocol @relation(fields: [protocolId], references: [id], onDelete: Cascade)
+
+  supplementId    String
+  supplement      Supplement @relation(fields: [supplementId], references: [id])
+
+  dosage          String
+  form            String
+  timing          String
+  notes           String?
+
+  createdAt       DateTime @default(now())
+
+  @@index([protocolId])
+  @@index([supplementId])
+}
+
+model Supplement {
+  id              String   @id @default(uuid())
+  name            String   @unique
+  description     String
+  category        String
+
+  mechanisms      String[]
+  benefits        String[]
+  sideEffects     String[]
+  interactions    String[]
+  contraindications String[]
+
+  recommendedDosage String
+  forms           String[]
+
+  relatedGenes    String[]
+  relatedBiomarkers String[]
+
+  imageUrl        String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  recommendations SupplementRecommendation[]
+
+  @@index([category])
+}
+
+model AIConversation {
+  id              String   @id @default(uuid())
+  clientId        String
+  client          ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  title           String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  messages        AIMessage[]
+
+  @@index([clientId])
+}
+
+model AIMessage {
+  id              String   @id @default(uuid())
+  conversationId  String
+  conversation    AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  role            String
+  content         String
+  isVoice         Boolean  @default(false)
+  audioUrl        String?
+
+  createdAt       DateTime @default(now())
+
+  @@index([conversationId])
+}
+
+model Appointment {
+  id              String   @id @default(uuid())
+  coachId         String
+  coach           CoachProfile @relation(fields: [coachId], references: [id], onDelete: Cascade)
+
+  clientId        String
+  client          ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  title           String
+  description     String?
+  startTime       DateTime
+  endTime         DateTime
+
+  meetingUrl      String?
+  status          String   @default("scheduled")
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([coachId])
+  @@index([clientId])
+  @@index([startTime])
+}
+
+model ProgressLog {
+  id              String   @id @default(uuid())
+  clientId        String
+  client          ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  date            DateTime @default(now())
+  weight          Float?
+  bodyFat         Float?
+  muscleMass      Float?
+
+  workoutCompleted Boolean @default(false)
+  mealsLogged     Int      @default(0)
+
+  notes           String?
+  mood            String?
+  energy          String?
+  sleep           Float?
+
+  createdAt       DateTime @default(now())
+
+  @@index([clientId])
+  @@index([date])
+}
+
+model Notification {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title           String
+  message         String
+  type            String
+
+  isRead          Boolean  @default(false)
+  actionUrl       String?
+
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+}
+
+model ActivityLog {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  action          String
+  resource        String
+  resourceId      String?
+  metadata        Json?
+
+  ipAddress       String?
+  userAgent       String?
+
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
