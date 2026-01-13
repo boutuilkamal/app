@@ -75,11 +75,17 @@ class BiomarkerResult(BaseModel):
     unit: str
     risk_level: str
 
+class BiomarkerResult(BaseModel):
+    name: str
+    value: float
+    unit: str
+    risk_level: str
+    category: str
+
 class BloodAnalysisResponse(BaseModel):
     overall_score: float
     optimal_count: int
-    borderline_count: int
-    critical_count: int
+    abnormal_count: int
     biomarker_results: List[BiomarkerResult]
     summary: str
 
@@ -90,18 +96,20 @@ async def analyze_blood_report(file: UploadFile = File(...)):
     Extract biomarker values and provide risk analysis
     """
     try:
+        from ocr.document_processor import DocumentProcessor
+        from report_generator.biomarker_analyzer import BiomarkerAnalyzer
+
         content = await file.read()
 
-        # OCR processing
-        extracted_text = await extract_text_from_file(content, file.content_type)
+        # Extract text from document
+        processor = DocumentProcessor()
+        extracted_text = await processor.extract_text(content, file.content_type)
 
-        # AI-powered biomarker extraction
-        biomarker_results = await extract_biomarker_values(extracted_text)
+        # Analyze biomarkers
+        analyzer = BiomarkerAnalyzer()
+        analysis = await analyzer.analyze_blood_report(extracted_text)
 
-        # Calculate overall analysis
-        analysis = await generate_blood_analysis(biomarker_results)
-
-        return analysis
+        return BloodAnalysisResponse(**analysis)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

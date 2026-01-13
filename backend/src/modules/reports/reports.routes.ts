@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { protect } from '../auth/auth.middleware';
 import dnaReportRoutes from './dna-report.routes';
+import bloodReportRoutes from './blood-report.routes';
 
 const router = Router();
 
@@ -9,17 +10,7 @@ router.use(protect);
 // DNA Report routes (Coach-only)
 router.use('/dna', dnaReportRoutes);
 
-// Legacy/placeholder blood report routes
-router.post('/blood/upload', (req, res) => {
-  res.json({ success: true, message: 'Upload blood report' });
-});
-
-router.get('/blood', (req, res) => {
-  res.json({ success: true, message: 'Get blood reports' });
-});
-
-router.get('/blood/:id', (req, res) => {
-  res.json({ success: true, message: 'Get blood report details' });
-});
+// Blood Report routes (Coach-only)
+router.use('/blood', bloodReportRoutes);
 
 export default router;
