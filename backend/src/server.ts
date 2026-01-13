@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import fileUpload from 'express-fileupload';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { config } from './config';
@@ -35,6 +36,13 @@ const io = new SocketIOServer(httpServer, {
 app.use(cors({ origin: config.corsOrigins, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(
+  fileUpload({
+    limits: { fileSize: config.maxFileSize },
+    abortOnLimit: true,
+    createParentPath: true,
+  })
+);
 app.use(rateLimiter);
 
 // Health check

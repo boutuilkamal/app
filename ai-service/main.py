@@ -50,18 +50,20 @@ async def analyze_genetic_report(file: UploadFile = File(...)):
     Extract gene variants and provide risk analysis
     """
     try:
+        from ocr.document_processor import DocumentProcessor
+        from report_generator.gene_analyzer import GeneAnalyzer
+
         content = await file.read()
 
-        # OCR processing for images/PDFs
-        extracted_text = await extract_text_from_file(content, file.content_type)
+        # Extract text from document
+        processor = DocumentProcessor()
+        extracted_text = await processor.extract_text(content, file.content_type)
 
-        # AI-powered gene extraction
-        gene_results = await extract_gene_variants(extracted_text)
+        # Analyze genetic variants
+        analyzer = GeneAnalyzer()
+        analysis = await analyzer.analyze_genetic_report(extracted_text)
 
-        # Calculate overall score and generate summary
-        analysis = await generate_genetic_analysis(gene_results)
-
-        return analysis
+        return GeneticAnalysisResponse(**analysis)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -162,66 +164,7 @@ async def generate_personalized_program(request: ProgramGenerationRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 # ===== UTILITY FUNCTIONS =====
-
-async def extract_text_from_file(content: bytes, content_type: str) -> str:
-    """Extract text from PDF, Image, or text file using OCR"""
-    # Implementation would use pytesseract for images, PyPDF2 for PDFs
-    # For now, returning placeholder
-    return "Extracted text from file"
-
-async def extract_gene_variants(text: str) -> List[GeneResult]:
-    """Use AI to extract gene variants from text"""
-    # Implementation would use OpenAI API to parse genetic data
-    return []
-
-async def generate_genetic_analysis(gene_results: List[GeneResult]) -> GeneticAnalysisResponse:
-    """Generate comprehensive genetic analysis"""
-    return GeneticAnalysisResponse(
-        overall_score=0.0,
-        strengths=[],
-        risks=[],
-        gene_results=gene_results,
-        summary="Analysis summary"
-    )
-
-async def extract_biomarker_values(text: str) -> List[BiomarkerResult]:
-    """Use AI to extract biomarker values from text"""
-    return []
-
-async def generate_blood_analysis(biomarker_results: List[BiomarkerResult]) -> BloodAnalysisResponse:
-    """Generate comprehensive blood analysis"""
-    return BloodAnalysisResponse(
-        overall_score=0.0,
-        optimal_count=0,
-        borderline_count=0,
-        critical_count=0,
-        biomarker_results=biomarker_results,
-        summary="Analysis summary"
-    )
-
-async def generate_ai_coach_response(
-    message: str,
-    history: List[Dict[str, str]],
-    user_data: Optional[Dict[str, Any]]
-) -> AICoachResponse:
-    """Generate AI coach response using LLM"""
-    # Implementation would use OpenAI API with context
-    return AICoachResponse(
-        message="AI coach response",
-        suggestions=[]
-    )
-
-async def ai_generate_program(
-    program_type: str,
-    genetic_data: Optional[Dict[str, Any]],
-    biomarker_data: Optional[Dict[str, Any]],
-    preferences: Optional[Dict[str, Any]]
-) -> ProgramGenerationResponse:
-    """Generate personalized program using AI"""
-    return ProgramGenerationResponse(
-        program={},
-        rationale="Program generation rationale"
-    )
+# Real implementations are in ocr/ and report_generator/ modules
 
 if __name__ == "__main__":
     import uvicorn
