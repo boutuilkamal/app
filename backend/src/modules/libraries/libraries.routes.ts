@@ -1,32 +1,27 @@
 import { Router } from 'express';
 import { protect } from '../auth/auth.middleware';
+import { librariesController } from './libraries.controller';
 
 const router = Router();
 
 router.use(protect);
 
-router.get('/exercises', (req, res) => {
-  res.json({ success: true, message: 'Get all exercises' });
-});
+// Search all
+router.get('/search', librariesController.searchAll.bind(librariesController));
 
-router.get('/exercises/:id', (req, res) => {
-  res.json({ success: true, message: 'Get exercise details' });
-});
+// Exercises
+router.get('/exercises/categories', librariesController.getExerciseCategories.bind(librariesController));
+router.get('/exercises/:id', librariesController.getExerciseById.bind(librariesController));
+router.get('/exercises', librariesController.getAllExercises.bind(librariesController));
 
-router.get('/recipes', (req, res) => {
-  res.json({ success: true, message: 'Get all recipes' });
-});
+// Recipes
+router.get('/recipes/categories', librariesController.getRecipeCategories.bind(librariesController));
+router.get('/recipes/:id', librariesController.getRecipeById.bind(librariesController));
+router.get('/recipes', librariesController.getAllRecipes.bind(librariesController));
 
-router.get('/recipes/:id', (req, res) => {
-  res.json({ success: true, message: 'Get recipe details' });
-});
-
-router.get('/supplements', (req, res) => {
-  res.json({ success: true, message: 'Get all supplements' });
-});
-
-router.get('/supplements/:id', (req, res) => {
-  res.json({ success: true, message: 'Get supplement details' });
-});
+// Supplements
+router.get('/supplements/categories', librariesController.getSupplementCategories.bind(librariesController));
+router.get('/supplements/:id', librariesController.getSupplementById.bind(librariesController));
+router.get('/supplements', librariesController.getAllSupplements.bind(librariesController));
 
 export default router;

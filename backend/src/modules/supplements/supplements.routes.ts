@@ -1,28 +1,16 @@
 import { Router } from 'express';
 import { protect } from '../auth/auth.middleware';
+import { supplementsController } from './supplements.controller';
 
 const router = Router();
 
 router.use(protect);
 
-router.post('/protocols', (req, res) => {
-  res.json({ success: true, message: 'Create supplement protocol' });
-});
-
-router.get('/protocols', (req, res) => {
-  res.json({ success: true, message: 'Get supplement protocols' });
-});
-
-router.get('/protocols/:id', (req, res) => {
-  res.json({ success: true, message: 'Get supplement protocol details' });
-});
-
-router.put('/protocols/:id', (req, res) => {
-  res.json({ success: true, message: 'Update supplement protocol' });
-});
-
-router.delete('/protocols/:id', (req, res) => {
-  res.json({ success: true, message: 'Delete supplement protocol' });
-});
+router.post('/protocols', supplementsController.createSupplementProtocol.bind(supplementsController));
+router.get('/protocols', supplementsController.getSupplementProtocols.bind(supplementsController));
+router.get('/protocols/:id', supplementsController.getSupplementProtocolById.bind(supplementsController));
+router.put('/protocols/:id', supplementsController.updateSupplementProtocol.bind(supplementsController));
+router.delete('/protocols/:id', supplementsController.deleteSupplementProtocol.bind(supplementsController));
+router.post('/protocols/:id/activate', supplementsController.activateSupplementProtocol.bind(supplementsController));
 
 export default router;

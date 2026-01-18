@@ -1,28 +1,16 @@
 import { Router } from 'express';
 import { protect } from '../auth/auth.middleware';
+import { nutritionController } from './nutrition.controller';
 
 const router = Router();
 
 router.use(protect);
 
-router.post('/plans', (req, res) => {
-  res.json({ success: true, message: 'Create nutrition plan' });
-});
-
-router.get('/plans', (req, res) => {
-  res.json({ success: true, message: 'Get nutrition plans' });
-});
-
-router.get('/plans/:id', (req, res) => {
-  res.json({ success: true, message: 'Get nutrition plan details' });
-});
-
-router.put('/plans/:id', (req, res) => {
-  res.json({ success: true, message: 'Update nutrition plan' });
-});
-
-router.delete('/plans/:id', (req, res) => {
-  res.json({ success: true, message: 'Delete nutrition plan' });
-});
+router.post('/plans', nutritionController.createNutritionPlan.bind(nutritionController));
+router.get('/plans', nutritionController.getNutritionPlans.bind(nutritionController));
+router.get('/plans/:id', nutritionController.getNutritionPlanById.bind(nutritionController));
+router.put('/plans/:id', nutritionController.updateNutritionPlan.bind(nutritionController));
+router.delete('/plans/:id', nutritionController.deleteNutritionPlan.bind(nutritionController));
+router.post('/plans/:id/activate', nutritionController.activateNutritionPlan.bind(nutritionController));
 
 export default router;
