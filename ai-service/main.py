@@ -27,27 +27,59 @@ async def health_check():
 
 # ===== GENETIC REPORT PROCESSING =====
 
-class GeneticAnalysisRequest(BaseModel):
-    file_type: str
-    content: Optional[str] = None
-
 class GeneResult(BaseModel):
     gene_symbol: str
+    gene_name: Optional[str] = None
+    category: Optional[str] = None
+    function: Optional[str] = None
     variant: str
     risk_level: str
+    variant_description: Optional[str] = None
+    recommendations: Optional[List[str]] = []
+
+class KeyInsight(BaseModel):
+    type: str
+    category: str
+    title: str
+    description: str
+
+class TopRecommendation(BaseModel):
+    priority: int
+    gene: str
+    category: str
+    recommendation: str
+    risk_level: str
+
+class TrafficLight(BaseModel):
+    green: int
+    orange: int
+    red: int
+
+class CategoryScore(BaseModel):
+    optimal: int
+    moderate: int
+    highRisk: int
+    total: int
+    score: float
 
 class GeneticAnalysisResponse(BaseModel):
     overall_score: float
+    total_genes_analyzed: int
     strengths: List[str]
     risks: List[str]
+    key_insights: List[KeyInsight]
+    top_recommendations: List[TopRecommendation]
     gene_results: List[GeneResult]
+    categories: Dict[str, List[GeneResult]]
+    category_scores: Dict[str, CategoryScore]
     summary: str
+    traffic_light: TrafficLight
 
-@app.post("/api/v1/analyze/genetic", response_model=GeneticAnalysisResponse)
+@app.post("/api/v1/analyze/genetic")
 async def analyze_genetic_report(file: UploadFile = File(...)):
     """
     Analyze genetic report from PDF/CSV/TXT/Image
-    Extract gene variants and provide risk analysis
+    Extract gene variants and provide comprehensive risk analysis
     """
     try:
         from ocr.document_processor import DocumentProcessor
@@ -63,17 +95,13 @@ async def analyze_genetic_report(file: UploadFile = File(...)):
         analyzer = GeneAnalyzer()
         analysis = await analyzer.analyze_genetic_report(extracted_text)
 
-        return GeneticAnalysisResponse(**analysis)
+        return analysis
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 # ===== BLOOD BIOMARKER PROCESSING =====
-
-class BiomarkerResult(BaseModel):
-    name: str
-    value: float
-    unit: str
-    risk_level: str
 
 class BiomarkerResult(BaseModel):
     name: str
@@ -125,6 +153,14 @@ class AICoachResponse(BaseModel):
     message: str
     suggestions: Optional[List[str]] = []
 
+async def generate_ai_coach_response(message: str, history: List, user_data: Dict) -> AICoachResponse:
+    """Generate AI coach response"""
+    # Placeholder implementation
+    return AICoachResponse(
+        message="I'm your AI health coach. How can I help you today?",
+        suggestions=["Tell me about your health goals", "Ask about your genetic results"]
+    )
+
 @app.post("/api/v1/ai-coach/chat", response_model=AICoachResponse)
 async def ai_coach_chat(request: AICoachRequest):
     """
@@ -154,6 +190,14 @@ class ProgramGenerationResponse(BaseModel):
     program: Dict[str, Any]
     rationale: str
 
+async def ai_generate_program(program_type: str, genetic_data: Dict, biomarker_data: Dict, preferences: Dict) -> ProgramGenerationResponse:
+    """Generate personalized program"""
+    # Placeholder implementation
+    return ProgramGenerationResponse(
+        program={"type": program_type, "weeks": 12},
+        rationale="Program generated based on your genetic profile"
+    )
+
 @app.post("/api/v1/generate/program", response_model=ProgramGenerationResponse)
 async def generate_personalized_program(request: ProgramGenerationRequest):
     """
@@ -170,9 +214,6 @@ async def generate_personalized_program(request: ProgramGenerationRequest):
         return program
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-# ===== UTILITY FUNCTIONS =====
-# Real implementations are in ocr/ and report_generator/ modules
 
 if __name__ == "__main__":
     import uvicorn

@@ -15,6 +15,7 @@ import userRoutes from './modules/users/user.routes';
 import geneticsRoutes from './modules/genetics/genetics.routes';
 import biomarkersRoutes from './modules/biomarkers/biomarkers.routes';
 import reportsRoutes from './modules/reports/reports.routes';
+import publicDnaRoutes from './modules/reports/public-dna.routes';
 import programsRoutes from './modules/programs/programs.routes';
 import nutritionRoutes from './modules/nutrition/nutrition.routes';
 import supplementsRoutes from './modules/supplements/supplements.routes';
@@ -61,6 +62,7 @@ app.use(`/api/${API_VERSION}/users`, userRoutes);
 app.use(`/api/${API_VERSION}/genetics`, geneticsRoutes);
 app.use(`/api/${API_VERSION}/biomarkers`, biomarkersRoutes);
 app.use(`/api/${API_VERSION}/reports`, reportsRoutes);
+app.use(`/api/${API_VERSION}/public/dna`, publicDnaRoutes); // Public DNA analysis (no auth)
 app.use(`/api/${API_VERSION}/programs`, programsRoutes);
 app.use(`/api/${API_VERSION}/nutrition`, nutritionRoutes);
 app.use(`/api/${API_VERSION}/supplements`, supplementsRoutes);

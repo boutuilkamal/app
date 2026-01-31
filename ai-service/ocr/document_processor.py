@@ -30,23 +30,51 @@ class DocumentProcessor:
 
             text = ""
             for page in reader.pages:
-                text += page.extract_text() + "\n"
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
+
+            # If no text extracted (might be scanned PDF), try OCR
+            if not text.strip():
+                text = DocumentProcessor._ocr_pdf(content)
 
             return text.strip()
         except Exception as e:
             raise Exception(f"PDF extraction failed: {str(e)}")
 
     @staticmethod
+    def _ocr_pdf(content: bytes) -> str:
+        """OCR a scanned PDF"""
+        try:
+            # Try to use pdf2image if available
+            from pdf2image import convert_from_bytes
+            import pytesseract
+            
+            images = convert_from_bytes(content)
+            text = ""
+            for image in images:
+                text += pytesseract.image_to_string(image) + "\n"
+            return text
+        except ImportError:
+            return "PDF appears to be scanned. Please install pdf2image and poppler for OCR support."
+        except Exception as e:
+            return f"OCR not available: {str(e)}"
+
+    @staticmethod
     def _extract_from_image(content: bytes) -> str:
         """Extract text from image using OCR"""
         try:
-            # For production, use pytesseract
-            # import pytesseract
-            # image = Image.open(io.BytesIO(content))
-            # text = pytesseract.image_to_string(image)
-            # return text
-
-            # Placeholder for now
-            return "Image OCR extraction placeholder - install pytesseract in production"
+            import pytesseract
+            image = Image.open(io.BytesIO(content))
+            
+            # Convert to RGB if necessary
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
+            
+            text = pytesseract.image_to_string(image)
+            return text.strip()
+        except ImportError:
+            # Fallback if pytesseract is not available
+            return "Image OCR not available. Please install pytesseract."
         except Exception as e:
             raise Exception(f"Image OCR failed: {str(e)}")

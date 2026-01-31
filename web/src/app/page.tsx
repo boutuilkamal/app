@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Activity, Brain, Dna, Heart, TrendingUp } from 'lucide-react';
+import { Activity, Brain, Dna, Heart, TrendingUp, Sparkles, Upload, ArrowRight } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -15,12 +15,20 @@ export default function Home() {
           <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8">
             Personalized health optimization powered by your DNA and blood biomarkers
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/dna-analysis"
+              className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+            >
+              <Dna className="w-5 h-5" />
+              Analyze DNA Report
+              <ArrowRight className="w-5 h-5" />
+            </Link>
             <Link
               href="/auth/register"
               className="px-8 py-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
             >
-              Get Started
+              Get Started Free
             </Link>
             <Link
               href="/auth/login"
@@ -28,6 +36,44 @@ export default function Home() {
             >
               Login
             </Link>
+          </div>
+        </div>
+
+        {/* DNA Analysis CTA */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl p-1 shadow-2xl">
+            <div className="bg-white dark:bg-gray-900 rounded-[calc(1.5rem-4px)] p-8 md:p-10">
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="flex-shrink-0">
+                  <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 rounded-2xl flex items-center justify-center">
+                    <Sparkles className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
+                  </div>
+                </div>
+                <div className="flex-1 text-center md:text-left">
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                    Try Our AI DNA Analysis
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">
+                    Upload any genetic report and get instant AI-powered insights, gene breakdown, 
+                    and personalized recommendations. No account required.
+                  </p>
+                  <div className="flex flex-wrap gap-3 justify-center md:justify-start text-sm">
+                    <span className="px-3 py-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-full">54 Genes Analyzed</span>
+                    <span className="px-3 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 rounded-full">AI-Powered</span>
+                    <span className="px-3 py-1 bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 rounded-full">Instant Results</span>
+                  </div>
+                </div>
+                <div className="flex-shrink-0">
+                  <Link
+                    href="/dna-analysis"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors"
+                  >
+                    <Upload className="w-5 h-5" />
+                    Upload Report
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
