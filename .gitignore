@@ -66,6 +66,10 @@ prisma/dev.db
 uploads/
 temp/
 
+# Generated audio
+data/audio-companion/audio/*.mp3
+data/audio-companion/audio/*.wav
+
 # Mobile
 *.jks
 *.p8
